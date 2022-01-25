@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react'
+
+import { Nav } from './ui/Nav'
+
+import { Demo0 } from './demos/0'
+import { Demo1 } from './demos/1'
+import { Demo2 } from './demos/2'
+import { Demo3 } from './demos/3'
+
+const COUNT = 4
 
 function App() {
+  const [demo, setDemo] = useState(Number(localStorage.getItem('demo')) || 0)
+
+  const onSetDemo = (index: number) => {
+    setDemo(index)
+    localStorage.setItem('demo', index.toString())
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Nav count={COUNT} onClick={onSetDemo} defaultIndex={demo} />
+
+      {demo === 0 && <Demo0 />}
+      {demo === 1 && <Demo1 />}
+      {demo === 2 && <Demo2 />}
+      {demo === 3 && <Demo3 />}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
