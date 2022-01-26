@@ -1,7 +1,7 @@
 import faker from 'faker'
 import { times } from 'lodash'
 
-import { TColumn } from './ui/Table.types'
+import { TColumn } from './components/Table.types'
 
 export const DEFAULT_PAGE_SIZE = 20
 export const PRODUCTS_SORT_BY = ['id', 'title', 'material'] as const

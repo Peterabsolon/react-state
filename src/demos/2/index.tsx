@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 
 import { fetchData } from '../../api'
 import { COLUMNS, DEFAULT_PAGE_SIZE, IProduct } from '../../constants'
-import { DataTable } from '../../ui/DataTable'
+import { DataTable } from '../../components'
 
 export const Demo2 = () => {
   const [data, setData] = useState<IProduct[]>([])
@@ -35,6 +35,7 @@ export const Demo2 = () => {
       loading={loading}
       onLoadMore={onLoadMore}
       canLoadMore={canLoadMore}
+      title="Infinite data loading"
     />
   )
 }

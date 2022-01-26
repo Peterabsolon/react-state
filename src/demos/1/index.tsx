@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 
 import { fetchData } from '../../api'
 import { COLUMNS, IProduct } from '../../constants'
-import { Table } from '../../ui/Table'
+import { Table } from '../../components'
 
 export const Demo1 = () => {
   const [data, setData] = useState<IProduct[]>([])
@@ -15,5 +15,5 @@ export const Demo1 = () => {
     ;(async () => setData(await fetchData()))()
   }, [])
 
-  return <Table<IProduct> data={data} columns={COLUMNS} />
+  return <Table<IProduct> data={data} columns={COLUMNS} title="Fetch data on mount" />
 }

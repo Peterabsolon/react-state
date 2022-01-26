@@ -3,22 +3,17 @@ import * as C from '@chakra-ui/react'
 
 import { ITableProps, Table } from './Table'
 import { TItemBase } from './Table.types'
+import { TSortDirection } from '../constants'
 
-export interface IDataTableProps<
-  TItem extends TItemBase,
-  TSortBy extends string
-> extends ITableProps<TItem> {
-  onLoadMore: () => void
+export interface IDataTableProps<TItem extends TItemBase, TSortBy extends string> extends ITableProps<TItem> {
   canLoadMore: boolean
-  sortBy?: TSortBy
-  sortAsc?: boolean
+  onLoadMore: () => void
   onSort?: (key: TSortBy) => void
+  sortBy?: TSortBy
+  sortDirection?: TSortDirection
 }
 
-export function DataTable<
-  TItem extends TItemBase,
-  TSortBy extends string = ''
->({
+export function DataTable<TItem extends TItemBase, TSortBy extends string = ''>({
   columns,
   data,
   loading,
@@ -26,21 +21,20 @@ export function DataTable<
   onSort,
   canLoadMore,
   sortBy,
-  sortAsc,
+  sortDirection,
+  title,
 }: IDataTableProps<TItem, TSortBy>) {
   return (
     <div>
       <Table
         data={data}
+        title={title}
         loading={loading}
         columns={columns.map((col) => ({
           ...col,
           sorterActive: col.dataKey === sortBy,
-          sorterAsc: col.dataKey === sortBy ? sortAsc : false,
-          onClick:
-            col.sorter && onSort
-              ? () => onSort(col.dataKey as unknown as TSortBy)
-              : undefined,
+          sorterAsc: col.dataKey === sortBy ? sortDirection === 'asc' : false,
+          onClick: col.sorter && onSort ? () => onSort(col.dataKey as unknown as TSortBy) : undefined,
         }))}
       />
 

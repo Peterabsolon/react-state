@@ -7,19 +7,11 @@ export interface ITableHeaderProps<TItem extends TItemBase> {
   col: TColumn<TItem>
 }
 
-export function TableHeader<TItem extends TItemBase>({
-  col,
-}: ITableHeaderProps<TItem>) {
+export function TableHeader<TItem extends TItemBase>({ col }: ITableHeaderProps<TItem>) {
   return (
-    <C.Th
-      onClick={col.onClick}
-      _hover={{ cursor: 'pointer' }}
-      style={{ userSelect: 'none' }}
-    >
+    <C.Th onClick={col.onClick} _hover={{ cursor: 'pointer' }} style={{ userSelect: 'none' }}>
       {col.label}
-      {col.sorter && (
-        <Sorter active={col.sorterActive}>{col.sorterAsc ? '👆' : '👇'}</Sorter>
-      )}
+      {col.sorter && <Sorter active={col.sorterActive}>{col.sorterAsc ? '👆' : '👇'}</Sorter>}
     </C.Th>
   )
 }
