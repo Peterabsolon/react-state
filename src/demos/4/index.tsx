@@ -38,9 +38,10 @@ export const Demo4 = () => {
       debounce(async (query: string) => {
         console.log('debounce called with query:', query)
 
-        const data = await fetchData({ sortBy, sortDirection, searchQuery: query })
         setLoading(true)
         setData([])
+
+        const data = await fetchData({ sortBy, sortDirection, searchQuery: query })
         setData(data)
         setLoading(false)
 
