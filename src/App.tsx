@@ -28,7 +28,7 @@ function App() {
       {demo === 1 && <Demo1 />}
       {demo === 2 && <Demo2 />}
       {demo === 3 && <Demo3 />}
-      {demo === 4 && <Demo4Mobx />}
+      {demo === 4 && <Demo4 />}
       {demo === 5 && <Demo5 />}
     </div>
   )

@@ -36,10 +36,17 @@ export const Demo4 = () => {
   const debouncedSearch = useMemo(
     () =>
       debounce(async (query: string) => {
+        console.log('debounce called with query:', query)
+
+        const data = await fetchData({ sortBy, sortDirection, searchQuery: query })
         setLoading(true)
         setData([])
-        setData(await fetchData({ sortBy, sortDirection, searchQuery: query }))
+        setData(data)
         setLoading(false)
+
+        console.log('fetch done, data:', data)
+
+        return data
       }, 500),
     [sortBy, sortDirection]
   )
