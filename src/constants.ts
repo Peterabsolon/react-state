@@ -5,9 +5,11 @@ import { TColumn } from './components/Table.types'
 
 export const DEFAULT_PAGE_SIZE = 20
 export const PRODUCTS_SORT_BY = ['id', 'title', 'material'] as const
+export const PRODUCTS_SEARCH_BY = ['title', 'material'] as const
 export const SORT_DIRECTION = ['asc', 'desc'] as const
 
 export type TProductsSortBy = typeof PRODUCTS_SORT_BY[number]
+export type TProductsSearchBy = typeof PRODUCTS_SEARCH_BY[number]
 export type TSortDirection = typeof SORT_DIRECTION[number]
 
 export interface IProduct {

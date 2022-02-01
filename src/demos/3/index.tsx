@@ -32,7 +32,7 @@ export const Demo3 = () => {
       sortBy,
     })
 
-    setData((prevData) => [...prevData, ...newData])
+    setData((oldData) => [...oldData, ...newData])
     setCanLoadMore(newData.length === DEFAULT_PAGE_SIZE)
     setLoading(false)
   }

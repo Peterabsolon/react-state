@@ -1,8 +1,8 @@
 import * as C from '@chakra-ui/react'
-import styled from 'styled-components'
 
-import { TItemBase, TColumn } from './Table.types'
+import { PageTitle } from './PageTitle'
 import { TableHeader } from './TableHeader'
+import { TItemBase, TColumn } from './Table.types'
 
 export interface ITableProps<TItem extends TItemBase> {
   data: TItem[]
@@ -14,7 +14,7 @@ export interface ITableProps<TItem extends TItemBase> {
 export function Table<TItem extends TItemBase>(props: ITableProps<TItem>) {
   return (
     <>
-      {props.title && <Title>{props.title}</Title>}
+      {props.title && <PageTitle>{props.title}</PageTitle>}
 
       <C.Table colorScheme="gray" variant="striped" aria-busy={props.loading} _loading={{ opacity: 0.3 }}>
         <C.Thead>
@@ -38,9 +38,3 @@ export function Table<TItem extends TItemBase>(props: ITableProps<TItem>) {
     </>
   )
 }
-
-const Title = styled.h2`
-  padding: 12px 24px;
-  font-size: 18px;
-  font-weight: 600;
-`

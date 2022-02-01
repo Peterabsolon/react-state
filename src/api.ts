@@ -1,5 +1,5 @@
 import { lowerCase } from 'lodash'
-import { FAKE_DATA, IProduct, TProductsSortBy, TSortDirection } from './constants'
+import { FAKE_DATA, IProduct, TProductsSearchBy, TProductsSortBy, TSortDirection } from './constants'
 
 export interface IFetchDataParams {
   skip?: number
@@ -12,7 +12,7 @@ export interface IFetchDataParams {
 const FAKE_DELAY_MS = 500
 
 export const fetchData = (query?: IFetchDataParams): Promise<IProduct[]> => {
-  // console.log('fetchData...')
+  console.log('fetchData...', { query })
 
   return new Promise((resolve) =>
     setTimeout(() => {
@@ -43,7 +43,8 @@ export const fetchData = (query?: IFetchDataParams): Promise<IProduct[]> => {
           return true
         }
 
-        return lowerCase(product.title).includes(lowerCase(query.searchQuery))
+        const searchFields = ['title', 'material'] as TProductsSearchBy[]
+        return searchFields.some((field) => lowerCase(product[field]).includes(lowerCase(query.searchQuery)))
       }
 
       const data = FAKE_DATA.filter(searchProducts)
