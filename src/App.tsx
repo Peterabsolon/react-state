@@ -1,37 +1,55 @@
 import { useState } from 'react'
+import styled from 'styled-components'
+import * as C from '@chakra-ui/react'
 
-import { Nav } from './components/Nav'
-
-import { Demo0 } from './demos/0'
-import { Demo1 } from './demos/1'
-import { Demo2 } from './demos/2'
-import { Demo3 } from './demos/3'
-import { Demo4 } from './demos/4'
-import { Demo4Mobx } from './demos/4/index.mobx'
-import { Demo5 } from './demos/5'
-
-const COUNT = 6
+import * as demos from './demos'
 
 function App() {
-  const [demo, setDemo] = useState(Number(localStorage.getItem('demo')) || 0)
+  const [demo, setDemo] = useState(localStorage.getItem('demoKey') || 'Demo1')
 
-  const onSetDemo = (index: number) => {
-    setDemo(index)
-    localStorage.setItem('demo', index.toString())
+  const onSetDemo = (key: string) => {
+    setDemo(key)
+    localStorage.setItem('demoKey', key)
   }
+
+  // @ts-ignore
+  const Demo = demos[demo]
 
   return (
     <div className="App">
-      <Nav count={COUNT} onClick={onSetDemo} defaultIndex={demo} />
+      <Wrapper>
+        <Navigation>
+          {Object.keys(demos).map((key) => (
+            <C.Button key={key} onClick={() => onSetDemo(key)}>
+              {key}
+            </C.Button>
+          ))}
+        </Navigation>
 
-      {demo === 0 && <Demo0 />}
-      {demo === 1 && <Demo1 />}
-      {demo === 2 && <Demo2 />}
-      {demo === 3 && <Demo3 />}
-      {demo === 4 && <Demo4 />}
-      {demo === 5 && <Demo5 />}
+        <Content>
+          <Demo />
+        </Content>
+      </Wrapper>
     </div>
   )
 }
+
+const Wrapper = styled.div`
+  display: flex;
+`
+
+const Navigation = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+
+  button {
+    margin-bottom: 12px;
+  }
+`
+
+const Content = styled.div`
+  flex-grow: 1;
+`
 
 export default App

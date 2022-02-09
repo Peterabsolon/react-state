@@ -6,15 +6,15 @@ import { debounce } from 'debounce'
 import { observable, makeAutoObservable } from 'mobx'
 import { ChangeEvent } from 'react'
 
-import { fetchData } from '../../api'
-import { DEFAULT_PAGE_SIZE, IProduct, TProductsSortBy, TSortDirection } from '../../constants'
+import { fetchData } from '../../../api'
+import { DEFAULT_PAGE_SIZE, IProduct, TProductsSortBy, TSortDirection } from '../../../constants'
 
 export class Demo4Store {
   // ===================================================
   // State
   // ===================================================
   data = observable<IProduct>([])
-  loading = false
+  loading = true
   canLoadMore = false
   sortBy: TProductsSortBy = 'id'
   sortDirection: TSortDirection = 'asc'

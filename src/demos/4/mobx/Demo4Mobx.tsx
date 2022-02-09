@@ -1,11 +1,11 @@
 import * as C from '@chakra-ui/react'
 import { observer } from 'mobx-react'
 
-import { DataTable, PageTitle } from '../../components'
-import { COLUMNS_WITH_SORTING, IProduct, TProductsSortBy } from '../../constants'
-import { useMount } from '../../utils'
+import { DataTable, PageTitle, Search } from '../../../components'
+import { COLUMNS_WITH_SORTING, IProduct, TProductsSortBy } from '../../../constants'
+import { useMount } from '../../../utils'
 
-import { store } from './index.store'
+import { store } from './Demo4Mobx.store'
 
 export const Demo4Mobx = observer(() => {
   useMount(store.onMount)
@@ -14,9 +14,7 @@ export const Demo4Mobx = observer(() => {
     <>
       <PageTitleMobx>Search</PageTitleMobx>
 
-      <C.Box px={5} pb={6}>
-        <InputMobx value={store.searchQuery} onChange={store.onSearch} placeholder="Search products..." />
-      </C.Box>
+      <SearchMobx value={store.searchQuery} onChange={store.onSearch} />
 
       <DataTableMobx<IProduct, TProductsSortBy>
         canLoadMore={store.canLoadMore}
@@ -33,5 +31,5 @@ export const Demo4Mobx = observer(() => {
 })
 
 const DataTableMobx = observer(DataTable)
-const InputMobx = observer(C.Input)
+const SearchMobx = observer(Search)
 const PageTitleMobx = observer(PageTitle)

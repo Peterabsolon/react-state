@@ -24,6 +24,8 @@ export function DataTable<TItem extends TItemBase, TSortBy extends string = ''>(
   sortDirection,
   title,
 }: IDataTableProps<TItem, TSortBy>) {
+  console.log('DataTable render')
+
   return (
     <div>
       <Table
