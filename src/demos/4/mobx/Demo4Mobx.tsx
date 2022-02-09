@@ -1,4 +1,3 @@
-import * as C from '@chakra-ui/react'
 import { observer } from 'mobx-react'
 
 import { DataTable, PageTitle, Search } from '../../../components'

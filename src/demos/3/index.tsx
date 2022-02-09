@@ -46,7 +46,7 @@ export const Demo3 = () => {
     setSortDirection(sortDirectionNew)
 
     const newData = await fetchData({
-      skip: 0,
+      skip: 0, // React batches updates, `data.length` may not be updated yet here
       sortBy: sortByNew,
       sortDirection: sortDirectionNew,
     })
@@ -61,6 +61,7 @@ export const Demo3 = () => {
   // ===================================================
   useEffect(() => {
     ;(async () => {
+      // Can't pass local state - fetch would run twice
       setData(
         await fetchData({
           sortBy: DEFAULT_SORT_BY,

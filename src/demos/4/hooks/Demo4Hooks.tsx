@@ -3,7 +3,6 @@
  */
 
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
-import * as C from '@chakra-ui/react'
 import { debounce } from 'debounce'
 
 import { fetchData } from '../../../api'
@@ -79,6 +78,7 @@ export const Demo4Hooks = () => {
     processData(newData)
   }
 
+  // May be used in useEffect inside Search
   const onSearch = useCallback(
     async ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
       setSearchQuery(value)

@@ -13,15 +13,12 @@ import { store } from './Demo4Custom.store'
 function useRender() {
   // eslint-disable-next-line
   const [_value, setValue] = useState(0)
-
   return useCallback(() => setValue((value) => value + 1), [])
 }
 
 export const Demo4Custom = () => {
   const render = useRender()
-
   const handleMount = useCallback(() => store.onMount(render), [render])
-
   useMount(handleMount)
 
   return (

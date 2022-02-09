@@ -83,4 +83,8 @@ export class Demo4Store {
   }
 }
 
-export const store = new Demo4Store()
+const store = new Demo4Store()
+
+;(window as any).store = store
+
+export { store }
