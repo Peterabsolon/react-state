@@ -9,6 +9,7 @@ export interface ITableProps<TItem extends TItemBase> {
   columns: TColumn<TItem>[]
   loading?: boolean
   title?: string
+  getActions?: (item: TItem) => { label: string; onClick: () => void }[]
 }
 
 export function Table<TItem extends TItemBase>(props: ITableProps<TItem>) {
@@ -31,6 +32,16 @@ export function Table<TItem extends TItemBase>(props: ITableProps<TItem>) {
               {props.columns.map((col) => (
                 <C.Td key={col.dataKey.toString()}>{item[col.dataKey]}</C.Td>
               ))}
+
+              {props.getActions && (
+                <C.Td align="right">
+                  {props.getActions(item).map((action) => (
+                    <C.Button key={action.label} onClick={action.onClick}>
+                      {action.label}
+                    </C.Button>
+                  ))}
+                </C.Td>
+              )}
             </C.Tr>
           ))}
         </C.Tbody>

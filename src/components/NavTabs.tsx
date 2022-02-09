@@ -2,7 +2,7 @@ import { ReactNode, useState } from 'react'
 import * as C from '@chakra-ui/react'
 
 export interface NavTabsProps {
-  tabs: { label: string; component: ReactNode }[]
+  tabs: { label: string; component: ReactNode | (() => ReactNode) }[]
   storageKey: string
 }
 
@@ -27,7 +27,7 @@ export const NavTabs = ({ tabs, storageKey }: NavTabsProps) => {
           ))}
         </C.TabList>
 
-        {component}
+        {typeof component === 'function' ? component() : component}
       </C.Tabs>
     </>
   )

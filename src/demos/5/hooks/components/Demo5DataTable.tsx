@@ -1,7 +1,7 @@
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { debounce } from 'debounce'
 
-import { fetchData } from '../../../../api'
+import { fetchData, TProductsFilters } from '../../../../api'
 import { DataTable, Search } from '../../../../components'
 import {
   COLUMNS_WITH_SORTING,
@@ -14,6 +14,7 @@ import {
 const DEFAULT_SORT_BY = 'id'
 const DEFAULT_SORT_DIRECTION = 'asc'
 const CACHE_KEY = 'demo5Data'
+const DEBOUNCE_MS = 1000
 
 export const Demo5DataTable = () => {
   let clearCacheTimeout = useRef<NodeJS.Timeout>()
@@ -29,10 +30,17 @@ export const Demo5DataTable = () => {
   const [sortBy, setSortBy] = useState<TProductsSortBy>(DEFAULT_SORT_BY)
   const [sortDirection, setSortDirection] = useState<TSortDirection>(DEFAULT_SORT_DIRECTION)
   const [searchQuery, setSearchQuery] = useState('')
+  const [filters, setFilters] = useState<TProductsFilters>({})
 
   // ===================================================
   // Helpers
   // ===================================================
+  // This would be nice but JS equality disagrees (both debounced methods would get called)
+  // const fetchParams: IFetchDataParams = useMemo(
+  //   () => ({ sortBy, sortDirection, skip: 0, filters, searchQuery }),
+  //   [sortBy, sortDirection, filters, searchQuery]
+  // )
+
   const processData = (newData: IProduct[], append = false) => {
     setData((oldData) => {
       const dataFinal = append ? [...oldData, ...newData] : newData
@@ -47,12 +55,25 @@ export const Demo5DataTable = () => {
   const debouncedSearch = useMemo(
     () =>
       debounce(async (query: string) => {
+        console.log('searching...')
         setLoading(true)
         setData([])
-        setData(await fetchData({ sortBy, sortDirection, searchQuery: query }))
+        setData(await fetchData({ sortBy, sortDirection, filters, searchQuery: query }))
         setLoading(false)
-      }, 500),
-    [sortBy, sortDirection]
+      }, DEBOUNCE_MS),
+    [filters, sortBy, sortDirection]
+  )
+
+  const debouncedFilter = useMemo(
+    () =>
+      debounce(async (filters: Partial<TProductsFilters>) => {
+        console.log('filtering...')
+        setLoading(true)
+        setData([])
+        processData(await fetchData({ sortBy, sortDirection, searchQuery, filters }))
+        setLoading(false)
+      }, DEBOUNCE_MS),
+    [searchQuery, sortBy, sortDirection]
   )
 
   // ===================================================
@@ -62,9 +83,11 @@ export const Demo5DataTable = () => {
     setLoading(true)
 
     const newData = await fetchData({
+      filters,
+      searchQuery,
       sortBy,
       sortDirection,
-      skip: data.length + DEFAULT_PAGE_SIZE,
+      skip: data.length,
     })
 
     processData(newData, true)
@@ -81,29 +104,35 @@ export const Demo5DataTable = () => {
     setSortDirection(sortDirectionNew)
 
     const newData = await fetchData({
+      filters,
+      searchQuery,
       skip: 0,
       sortBy: sortByNew,
       sortDirection: sortDirectionNew,
-      searchQuery,
     })
 
     processData(newData)
   }
 
-  // May be used in useEffect inside Search
-  const onSearch = useCallback(
-    async ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(value)
-      debouncedSearch(value)
-    },
-    [debouncedSearch]
-  )
+  const onSearch = async ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(value)
+    debouncedSearch(value)
+  }
+
+  const onFilter = async (key: keyof TProductsFilters, value: string) => {
+    setFilters((filters) => {
+      const newFilters = { ...filters, [key]: value }
+      debouncedFilter(newFilters)
+      return newFilters
+    })
+  }
 
   // ===================================================
   // Effects
   // ===================================================
-
-  // Fetch initial data
+  /**
+   * Fetch initial data
+   */
   useEffect(() => {
     ;(async () => {
       processData(
@@ -116,24 +145,25 @@ export const Demo5DataTable = () => {
     })()
   }, [])
 
-  // Sync fetch params to URL search query
+  /**
+   * Sync fetch params to URL search query
+   */
   useEffect(() => {
     const searchParams = new URLSearchParams({
       sortBy,
       sortDirection,
       searchQuery,
-      skip: data.length.toString(),
+      skip: Math.max(data.length - DEFAULT_PAGE_SIZE, 0).toString(),
     })
 
     window.history.replaceState('', '', `${window.location.pathname}?${searchParams.toString()}`)
   }, [data.length, sortBy, sortDirection, searchQuery]) // can not be object because JS equality
 
-  // Clear cache every 5 seconds
+  /**
+   * Clear cache every 5 seconds, reset on any data change
+   */
   useEffect(() => {
-    if (clearCacheTimeout.current) {
-      clearTimeout(clearCacheTimeout.current)
-    }
-
+    if (clearCacheTimeout.current) clearTimeout(clearCacheTimeout.current)
     clearCacheTimeout.current = setTimeout(() => window.localStorage.removeItem(CACHE_KEY), 5000)
   }, [data.length])
 
@@ -141,11 +171,13 @@ export const Demo5DataTable = () => {
     <>
       <Search value={searchQuery} onChange={onSearch} />
 
-      <DataTable<IProduct, TProductsSortBy>
+      <DataTable<IProduct, TProductsSortBy, TProductsFilters>
         canLoadMore={canLoadMore}
         columns={COLUMNS_WITH_SORTING}
         data={data}
+        filters={filters}
         loading={loading}
+        onFilter={onFilter}
         onLoadMore={onLoadMore}
         onSort={onSort}
         sortBy={sortBy}

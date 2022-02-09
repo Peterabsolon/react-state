@@ -1,22 +1,47 @@
 import { lowerCase } from 'lodash'
 import { FAKE_DATA, IProduct, TProductsSearchBy, TProductsSortBy, TSortDirection } from './constants'
 
+export type TProductPayload = Omit<IProduct, 'id'>
+
+export interface TProductsFilters {
+  id?: string
+  title?: string
+  material?: string
+}
+
 export interface IFetchDataParams {
   skip?: number
   take?: number
   sortBy?: TProductsSortBy
   sortDirection?: TSortDirection
   searchQuery?: string
+  filters?: TProductsFilters
 }
 
 const FAKE_DELAY_MS = 500
+
+export const sleep = (ms: number = FAKE_DELAY_MS) => new Promise((resolve) => setTimeout(resolve, ms))
+
+export const createProduct = async (product: TProductPayload) => {
+  await sleep()
+  return { ...product, id: Math.random() }
+}
+
+export const editProduct = async (id: number, product: TProductPayload) => {
+  await sleep()
+
+  return {
+    ...product,
+    id,
+  }
+}
 
 export const fetchData = (query?: IFetchDataParams): Promise<IProduct[]> => {
   console.log('fetchData...', { query })
 
   return new Promise((resolve) =>
     setTimeout(() => {
-      const { skip = 0, take = 20, sortBy = 'id', sortDirection = 'asc' } = query || {}
+      const { skip = 0, take = 20, sortBy = 'id', sortDirection = 'asc', filters } = query || {}
 
       const sortProducts = (a: IProduct, b: IProduct) => {
         const isAscending = sortDirection === 'asc'
@@ -47,7 +72,24 @@ export const fetchData = (query?: IFetchDataParams): Promise<IProduct[]> => {
         return searchFields.some((field) => lowerCase(product[field]).includes(lowerCase(query.searchQuery)))
       }
 
+      const filterProducts = (product: IProduct) => {
+        if (!filters) {
+          return true
+        }
+
+        return Object.entries(filters).every(([key, filter]) => {
+          if (filter) {
+            const prop = lowerCase(product[key as keyof TProductsFilters].toString())
+            const _filter = lowerCase(filter)
+            return prop.includes(_filter)
+          }
+
+          return true
+        })
+      }
+
       const data = FAKE_DATA.filter(searchProducts)
+        .filter(filterProducts)
         .sort(sortProducts)
         .slice(skip, skip + take)
 

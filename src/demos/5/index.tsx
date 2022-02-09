@@ -1,15 +1,15 @@
 /**
  * - [x] With Create modal - needs modifying from outside
  * - [x] With syncing URL - pagination + filters asQueryParams
- * - [] With count - needs fetching/searching to display correct message
- * - [] With caching, needs initialized to not show loader again (impossible with useState alone?)
+ * - [x] With caching, needs initialized to not show loader again (impossible with useState alone?)
+ * - [x] with filters
+ * - [x] SHOW OLD DEMO with cross dependencies - price per product per rate
  */
 
 import { NavTabs } from '../../components'
 
 import { Demo5Hooks } from './hooks/Demo5Hooks'
-//  import { Demo5Custom } from './custom/Demo5Custom'
-//  import { Demo5Mobx } from './mobx/Demo5Mobx'
+import { Demo5Mobx } from './mobx/Demo5Mobx'
 
 export const Demo5 = () => {
   return (
@@ -18,8 +18,7 @@ export const Demo5 = () => {
         storageKey="demo5"
         tabs={[
           { label: 'Hooks', component: <Demo5Hooks /> },
-          //    { label: 'Custom', component: <Demo5Custom /> },
-          //    { label: 'Mobx', component: <Demo5Mobx /> },
+          { label: 'Mobx', component: <Demo5Mobx /> },
         ]}
       />
     </>

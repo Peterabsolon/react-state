@@ -22,7 +22,7 @@ export const Demo2 = () => {
 
   const onLoadMore = async () => {
     setLoading(true)
-    const newData = await fetchData({ skip: data.length + DEFAULT_PAGE_SIZE })
+    const newData = await fetchData({ skip: data.length })
     setData((prevData) => [...prevData, ...newData])
     setCanLoadMore(newData.length === DEFAULT_PAGE_SIZE)
     setLoading(false)

@@ -4,41 +4,66 @@ import * as C from '@chakra-ui/react'
 import { ITableProps, Table } from './Table'
 import { TItemBase } from './Table.types'
 import { TSortDirection } from '../constants'
+import { useMemo } from 'react'
+import { observer } from 'mobx-react-lite'
 
-export interface IDataTableProps<TItem extends TItemBase, TSortBy extends string> extends ITableProps<TItem> {
-  canLoadMore: boolean
+export interface IDataTableProps<TItem extends TItemBase, TSortBy extends string, TFilters extends Record<string, any>>
+  extends ITableProps<TItem> {
+  canLoadMore?: boolean
   onLoadMore: () => void
   onSort?: (key: TSortBy) => void
+  onFilter?: (key: keyof TFilters, value: string) => void
   sortBy?: TSortBy
   sortDirection?: TSortDirection
+  filters?: Partial<TFilters>
+  getActions?: (item: TItem) => { label: string; onClick: () => void }[]
+  useObserver?: boolean
 }
 
-export function DataTable<TItem extends TItemBase, TSortBy extends string = ''>({
+export function DataTable<
+  TItem extends TItemBase,
+  TSortBy extends string = '',
+  TFilters extends Record<string, any> = {}
+>({
+  canLoadMore,
   columns,
   data,
+  filters,
   loading,
+  onFilter,
   onLoadMore,
   onSort,
-  canLoadMore,
   sortBy,
   sortDirection,
   title,
-}: IDataTableProps<TItem, TSortBy>) {
+  getActions,
+  useObserver,
+}: IDataTableProps<TItem, TSortBy, TFilters>) {
   console.log('DataTable render')
+
+  const columnsFinal = useMemo(
+    () =>
+      columns.map((col) => ({
+        ...col,
+        sorterActive: col.dataKey === sortBy,
+        sorterAsc: col.dataKey === sortBy ? sortDirection === 'asc' : false,
+        onSort: col.sorter && onSort ? () => onSort(col.dataKey as unknown as TSortBy) : undefined,
+        onFilter: onFilter ? (value: string) => onFilter(col.dataKey as keyof TFilters, value) : undefined,
+      })),
+    [onSort, onFilter, columns, sortBy, sortDirection]
+  )
+
+  const tableProps = {
+    data,
+    title,
+    loading,
+    columns: columnsFinal,
+    getActions,
+  }
 
   return (
     <div>
-      <Table
-        data={data}
-        title={title}
-        loading={loading}
-        columns={columns.map((col) => ({
-          ...col,
-          sorterActive: col.dataKey === sortBy,
-          sorterAsc: col.dataKey === sortBy ? sortDirection === 'asc' : false,
-          onClick: col.sorter && onSort ? () => onSort(col.dataKey as unknown as TSortBy) : undefined,
-        }))}
-      />
+      {useObserver ? <MobxTable {...tableProps} /> : <Table {...tableProps} />}
 
       <Footer>
         {loading ? (
@@ -60,3 +85,5 @@ const Footer = styled.div`
   align-items: center;
   flex-direction: column;
 `
+
+const MobxTable = observer(Table)

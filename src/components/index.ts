@@ -1,3 +1,4 @@
+export * from './CodeBlock'
 export * from './DataTable'
 export * from './NavTabs'
 export * from './PageTitle'

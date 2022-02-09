@@ -52,7 +52,7 @@ export const Demo4Hooks = () => {
     const newData = await fetchData({
       sortBy,
       sortDirection,
-      skip: data.length + DEFAULT_PAGE_SIZE,
+      skip: data.length,
     })
 
     processData(newData, true)

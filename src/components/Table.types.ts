@@ -3,10 +3,12 @@ export type TItemBase = {
 }
 
 export type TColumn<TItem extends TItemBase> = {
-  label: string
   dataKey: keyof TItem
+  label: string
+  onSort?: () => void
+  onFilter?: (value: string) => void
   sorter?: boolean
   sorterActive?: boolean
   sorterAsc?: boolean
-  onClick?: () => void
+  filter?: boolean
 }

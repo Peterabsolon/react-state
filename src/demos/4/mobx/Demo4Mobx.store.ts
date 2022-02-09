@@ -4,7 +4,7 @@
  */
 
 import { debounce } from 'debounce'
-import { observable, makeAutoObservable, autorun } from 'mobx'
+import { observable, makeAutoObservable } from 'mobx'
 import { ChangeEvent } from 'react'
 
 import { fetchData } from '../../../api'
@@ -24,8 +24,6 @@ export class Demo4Store {
   constructor() {
     makeAutoObservable(this)
     this.debouncedSearch = debounce(this.debouncedSearch, 500)
-
-    autorun(() => console.log('sortBy is: \n', this.sortBy))
   }
 
   // ===================================================

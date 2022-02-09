@@ -28,8 +28,9 @@ export const Demo3 = () => {
     setLoading(true)
 
     const newData = await fetchData({
-      skip: data.length + DEFAULT_PAGE_SIZE,
+      skip: data.length,
       sortBy,
+      sortDirection,
     })
 
     setData((oldData) => [...oldData, ...newData])
