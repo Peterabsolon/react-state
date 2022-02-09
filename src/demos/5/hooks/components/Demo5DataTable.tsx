@@ -1,11 +1,4 @@
-/**
- * - [x] With Create modal - needs modifying from outside
- * - [x] With syncing URL - pagination + filters asQueryParams
- * - [] With count - needs fetching/searching to display correct message
- * - [] With caching, needs initialized to not show loader again (impossible with useState alone?)
- */
-
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { debounce } from 'debounce'
 
 import { fetchData } from '../../../../api'
@@ -20,13 +13,18 @@ import {
 
 const DEFAULT_SORT_BY = 'id'
 const DEFAULT_SORT_DIRECTION = 'asc'
+const CACHE_KEY = 'demo5Data'
 
 export const Demo5DataTable = () => {
+  let clearCacheTimeout = useRef<NodeJS.Timeout>()
+  const cachedData = window.localStorage.getItem(CACHE_KEY)
+  const initialData = cachedData ? JSON.parse(cachedData) : []
+
   // ===================================================
   // State
   // ===================================================
-  const [data, setData] = useState<IProduct[]>([])
-  const [loading, setLoading] = useState(true)
+  const [data, setData] = useState<IProduct[]>(initialData)
+  const [loading, setLoading] = useState(!cachedData)
   const [canLoadMore, setCanLoadMore] = useState(true)
   const [sortBy, setSortBy] = useState<TProductsSortBy>(DEFAULT_SORT_BY)
   const [sortDirection, setSortDirection] = useState<TSortDirection>(DEFAULT_SORT_DIRECTION)
@@ -36,7 +34,12 @@ export const Demo5DataTable = () => {
   // Helpers
   // ===================================================
   const processData = (newData: IProduct[], append = false) => {
-    setData((oldData) => (append ? [...oldData, ...newData] : newData))
+    setData((oldData) => {
+      const dataFinal = append ? [...oldData, ...newData] : newData
+      window.localStorage.setItem(CACHE_KEY, JSON.stringify(dataFinal))
+      return dataFinal
+    })
+
     setCanLoadMore(newData.length === DEFAULT_PAGE_SIZE)
     setLoading(false)
   }
@@ -124,6 +127,15 @@ export const Demo5DataTable = () => {
 
     window.history.replaceState('', '', `${window.location.pathname}?${searchParams.toString()}`)
   }, [data.length, sortBy, sortDirection, searchQuery]) // can not be object because JS equality
+
+  // Clear cache every 5 seconds
+  useEffect(() => {
+    if (clearCacheTimeout.current) {
+      clearTimeout(clearCacheTimeout.current)
+    }
+
+    clearCacheTimeout.current = setTimeout(() => window.localStorage.removeItem(CACHE_KEY), 5000)
+  }, [data.length])
 
   return (
     <>

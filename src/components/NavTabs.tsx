@@ -21,7 +21,9 @@ export const NavTabs = ({ tabs, storageKey }: NavTabsProps) => {
       <C.Tabs defaultIndex={tabIndex}>
         <C.TabList>
           {tabs.map(({ label }, index) => (
-            <C.Tab onClick={() => handleSetTab(index)}>{label}</C.Tab>
+            <C.Tab key={label} onClick={() => handleSetTab(index)}>
+              {label}
+            </C.Tab>
           ))}
         </C.TabList>
 
