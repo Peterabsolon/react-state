@@ -12,6 +12,7 @@ export const Overview = () => {
     <Item>- Transparently applies functional reactive programming paradigm</Item>,
     <Item>- It's like React for data: code the "what" part, not "how"</Item>,
     <Item>- Flawlessly optimizes React render performance with 0 effort 🚀🚀🚀</Item>,
+    <Item>- Pleasure to work with 💜</Item>,
   ]
 
   const visible = items.slice(0, linesVisible)

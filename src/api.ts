@@ -9,13 +9,16 @@ export interface TProductsFilters {
   material?: string
 }
 
-export interface IFetchDataParams {
+export interface IFetchDataParams<
+  TSortBy extends string = TProductsSortBy,
+  TFilters extends Record<string, any> = TProductsFilters
+> {
   skip?: number
   take?: number
-  sortBy?: TProductsSortBy
+  sortBy?: TSortBy
   sortDirection?: TSortDirection
   searchQuery?: string
-  filters?: TProductsFilters
+  filters?: TFilters
 }
 
 const FAKE_DELAY_MS = 500

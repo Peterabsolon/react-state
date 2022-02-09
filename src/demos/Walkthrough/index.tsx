@@ -45,6 +45,10 @@ export const Walkthrough = () => (
               </>
             ),
           },
+          {
+            label: 'Render performance demo',
+            component: () => <>Show demo...</>,
+          },
 
           //    { label: 'Custom', component: <Demo5Custom /> },
           //    { label: 'Mobx', component: <Demo5Mobx /> },
