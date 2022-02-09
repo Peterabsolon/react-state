@@ -1,5 +1,5 @@
 export * from './DataTable'
-export * from './Nav'
+export * from './NavTabs'
 export * from './PageTitle'
 export * from './Table.types'
 export * from './Table'
